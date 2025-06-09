@@ -8,13 +8,9 @@ spring:
     password: ${db-pass}
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
         highlight_sql: true
     show-sql: true
-
-  sql:
-    init:
-      mode: never
