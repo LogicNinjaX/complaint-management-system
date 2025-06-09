@@ -1,24 +1,22 @@
 package com.cms.complaint_management_system.dto.api_request;
 
-import java.util.UUID;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+
 
 public class CitizenRegisterRequest {
 
-    private UUID userId;
-
+    @NotEmpty(message = "required field")
+    @Size(min = 5, max = 30, message = "username must be between 5-30 characters")
     private String username;
 
+    @NotEmpty(message = "required field")
+    @Size(min = 8, message = "password must be 8 characters long or more")
     private String password;
 
+    @NotEmpty(message = "required field")
     private String email;
 
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
 
     public String getUsername() {
         return username;
