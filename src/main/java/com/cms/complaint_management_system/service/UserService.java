@@ -1,5 +1,6 @@
 package com.cms.complaint_management_system.service;
 
+import com.cms.complaint_management_system.dto.api_request.UserUpdateRequest;
 import com.cms.complaint_management_system.entity.UserRecord;
 
 import java.util.UUID;
@@ -10,5 +11,7 @@ public interface UserService {
 
     void deleteUserDetails(UUID userId);
 
-    UserRecord getUserDetails(UUID uuid);
+    UserRecord getUserDetails(UUID userId);
+
+    UserRecord updateUserDetails(UUID userId, UserUpdateRequest request);
 }
