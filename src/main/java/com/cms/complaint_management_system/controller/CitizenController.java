@@ -37,7 +37,7 @@ public class CitizenController {
         var savedUserEntity = userService.saveUserDetails(userEntity);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new GeneralResponse<>(true, "Citizen details successfully", savedUserEntity));
+                .body(new GeneralResponse<>(true, "Citizen details saved successfully", savedUserEntity));
     }
 
     @GetMapping("/citizens/{citizen-id}")
