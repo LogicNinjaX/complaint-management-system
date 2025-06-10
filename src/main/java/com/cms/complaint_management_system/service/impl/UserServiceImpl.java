@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserRecord getUserDetails(UUID userId) {
+    public UserRecord getUserDetails(UUID userId) throws UserException{
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserException("user not found with: "+ userId));
     }
