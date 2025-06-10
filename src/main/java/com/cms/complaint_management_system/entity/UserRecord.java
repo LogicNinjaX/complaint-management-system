@@ -40,6 +40,16 @@ public class UserRecord {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    public UserRecord() {
+    }
+
+    public UserRecord(String username, String password, String email, Departments department) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.department = department;
+    }
+
     public UUID getUserId() {
         return userId;
     }
