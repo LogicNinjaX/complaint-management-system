@@ -7,6 +7,7 @@ import com.cms.complaint_management_system.exception.UserNotFoundException;
 import com.cms.complaint_management_system.repository.UserRepository;
 import com.cms.complaint_management_system.service.UserService;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -16,14 +17,17 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper) {
+    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public UserRecord saveUserDetails(UserRecord userRecord) {
+        userRecord.setPassword(passwordEncoder.encode(userRecord.getPassword()));
         return userRepository.save(userRecord);
     }
 
