@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -31,6 +32,7 @@ public class OfficerController {
         this.modelMapper = modelMapper;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/officers") // roles allowed -> admin
     public ResponseEntity<GeneralResponse<?>> registerOfficer(@Valid @RequestBody OfficerRegisterRequest request){
         var officerEntity = officerService.saveOfficerDetails(request);
@@ -39,6 +41,7 @@ public class OfficerController {
                 .body(new GeneralResponse<>(true, "Officer details saved successfully", officerEntity));
     }
 
+    @PreAuthorize("hasAnyRole('OFFICER', 'ADMIN')")
     @GetMapping("/officers/{officer-id}")
     public ResponseEntity<GeneralResponse<UserRecord>> getOfficer(@PathVariable("officer-id") UUID officerId){
         var officerEntity = userService.getUserDetails(officerId);
@@ -51,6 +54,7 @@ public class OfficerController {
                 .body(new GeneralResponse<>(true, "Data retrieved successfully", officerEntity));
     }
 
+    @PreAuthorize("hasAnyRole('OFFICER', 'ADMIN')")
     @DeleteMapping("/officers/{officer-id}")
     public ResponseEntity<GeneralResponse<?>> deleteOfficer(@PathVariable("officer-id") UUID officerId){
         userService.deleteUserDetails(officerId);
@@ -58,6 +62,7 @@ public class OfficerController {
                 .body(new GeneralResponse<>(true, "Officer deleted successfully", null));
     }
 
+    @PreAuthorize("hasAnyRole('OFFICER', 'ADMIN')")
     @PutMapping("/officers/{officer-id}")
     public ResponseEntity<GeneralResponse<UserRecord>> updateOfficer(@PathVariable("officer-id") UUID officerId,
                                                            @Valid @RequestBody OfficerUpdateRequest request){

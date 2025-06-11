@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -40,6 +41,7 @@ public class CitizenController {
                 .body(new GeneralResponse<>(true, "Citizen details saved successfully", savedUserEntity));
     }
 
+    @PreAuthorize("hasAnyRole('CITIZEN', 'ADMIN')")
     @GetMapping("/citizens/{citizen-id}")
     public ResponseEntity<GeneralResponse<?>> getCitizen(@PathVariable("citizen-id") UUID citizenId){
         var userEntity = userService.getUserDetails(citizenId);
@@ -48,6 +50,7 @@ public class CitizenController {
                 .body(new GeneralResponse<>(true, "Data retrieved successfully", userEntity));
     }
 
+    @PreAuthorize("hasAnyRole('CITIZEN', 'ADMIN')")
     @DeleteMapping("/citizens/{citizen-id}")
     public ResponseEntity<GeneralResponse<?>> deleteCitizen(@PathVariable("citizen-id") UUID citizenId){
         userService.deleteUserDetails(citizenId);
@@ -55,6 +58,7 @@ public class CitizenController {
                 .body(new GeneralResponse<>(true, "Citizen deleted successfully", null));
     }
 
+    @PreAuthorize("hasAnyRole('CITIZEN', 'ADMIN')")
     @PutMapping("/citizens/{citizen-id}")
     public ResponseEntity<GeneralResponse<?>> updateUserDetails(@Valid @PathVariable("citizen-id") UUID citizenId,
                                                                 @RequestBody UserUpdateRequest request){
