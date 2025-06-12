@@ -3,7 +3,7 @@ package com.cms.complaint_management_system.dto.api_request;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
-public class UserUpdateRequest {
+public class CitizenUpdateRequest {
 
 
     @NotEmpty(message = "required field")
