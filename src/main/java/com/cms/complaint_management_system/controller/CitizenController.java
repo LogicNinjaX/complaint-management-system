@@ -1,13 +1,13 @@
 package com.cms.complaint_management_system.controller;
 
 
+import com.cms.complaint_management_system.dto.CitizenDto;
 import com.cms.complaint_management_system.dto.api_request.CitizenRegisterRequest;
-import com.cms.complaint_management_system.dto.api_request.UserUpdateRequest;
+import com.cms.complaint_management_system.dto.api_request.CitizenUpdateRequest;
 import com.cms.complaint_management_system.dto.api_response.GeneralResponse;
 import com.cms.complaint_management_system.dto.api_response.UserUpdateResponse;
 import com.cms.complaint_management_system.entity.UserRecord;
-import com.cms.complaint_management_system.enums.UserRoles;
-import com.cms.complaint_management_system.service.UserService;
+import com.cms.complaint_management_system.service.CitizenService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -21,21 +21,20 @@ import java.util.UUID;
 @RequestMapping("/api/v1")
 public class CitizenController {
 
-    private final UserService userService;
+    private final CitizenService citizenService;
     private final ModelMapper modelMapper;
 
-    public CitizenController(UserService userService, ModelMapper modelMapper) {
-        this.userService = userService;
+    public CitizenController(CitizenService citizenService, ModelMapper modelMapper) {
+        this.citizenService = citizenService;
         this.modelMapper = modelMapper;
     }
 
 
     @PostMapping("/citizens")
-    public ResponseEntity<GeneralResponse<UserRecord>> registerCitizen(@Valid @RequestBody CitizenRegisterRequest registerRequest){
+    public ResponseEntity<GeneralResponse<CitizenDto>> registerCitizen(@Valid @RequestBody CitizenRegisterRequest registerRequest){
         var userEntity = modelMapper.map(registerRequest, UserRecord.class);
-        userEntity.setRole(UserRoles.CITIZEN);
 
-        var savedUserEntity = userService.saveUserDetails(userEntity);
+        var savedUserEntity = citizenService.saveCitizenDetails(userEntity);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new GeneralResponse<>(true, "Citizen details saved successfully", savedUserEntity));
@@ -43,8 +42,8 @@ public class CitizenController {
 
     @PreAuthorize("hasAnyRole('CITIZEN', 'ADMIN')")
     @GetMapping("/citizens/{citizen-id}")
-    public ResponseEntity<GeneralResponse<?>> getCitizen(@PathVariable("citizen-id") UUID citizenId){
-        var userEntity = userService.getUserDetails(citizenId);
+    public ResponseEntity<GeneralResponse<CitizenDto>> getCitizen(@PathVariable("citizen-id") UUID citizenId){
+        var userEntity = citizenService.getCitizenDetails(citizenId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GeneralResponse<>(true, "Data retrieved successfully", userEntity));
@@ -53,7 +52,7 @@ public class CitizenController {
     @PreAuthorize("hasAnyRole('CITIZEN', 'ADMIN')")
     @DeleteMapping("/citizens/{citizen-id}")
     public ResponseEntity<GeneralResponse<?>> deleteCitizen(@PathVariable("citizen-id") UUID citizenId){
-        userService.deleteUserDetails(citizenId);
+        citizenService.deleteCitizenDetails(citizenId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GeneralResponse<>(true, "Citizen deleted successfully", null));
     }
@@ -61,9 +60,9 @@ public class CitizenController {
     @PreAuthorize("hasAnyRole('CITIZEN', 'ADMIN')")
     @PutMapping("/citizens/{citizen-id}")
     public ResponseEntity<GeneralResponse<?>> updateUserDetails(@Valid @PathVariable("citizen-id") UUID citizenId,
-                                                                @RequestBody UserUpdateRequest request){
+                                                                @RequestBody CitizenUpdateRequest request){
 
-        var newUser = userService.updateUserDetails(citizenId, request);
+        var newUser = citizenService.updateCitizenDetails(citizenId, request);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GeneralResponse<>(true,
