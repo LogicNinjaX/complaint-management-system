@@ -5,7 +5,6 @@ import jakarta.validation.constraints.Size;
 
 public class CitizenUpdateRequest {
 
-
     @NotEmpty(message = "required field")
     @Size(min = 5, max = 30, message = "username must be between 5-30 characters")
     private String username;
