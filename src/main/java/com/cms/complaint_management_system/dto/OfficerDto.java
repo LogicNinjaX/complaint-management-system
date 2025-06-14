@@ -3,10 +3,13 @@ package com.cms.complaint_management_system.dto;
 import com.cms.complaint_management_system.entity.Departments;
 import com.cms.complaint_management_system.enums.UserRoles;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class OfficerDto {
+public class OfficerDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private UUID userId;
 

@@ -1,10 +1,14 @@
 package com.cms.complaint_management_system.dto;
 
 import com.cms.complaint_management_system.enums.UserRoles;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class CitizenDto {
+public class CitizenDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private UUID userId;
 
