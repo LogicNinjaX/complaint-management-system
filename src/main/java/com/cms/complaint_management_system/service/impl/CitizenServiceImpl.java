@@ -12,7 +12,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -68,10 +67,5 @@ public class CitizenServiceImpl implements CitizenService {
         user.setEmail(request.getEmail());
 
         return saveCitizenDetails(user);
-    }
-
-    @Override
-    public List<UserRecord> getAllUsers(){
-        return userRepository.findAll();
     }
 }
