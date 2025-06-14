@@ -5,6 +5,7 @@ import com.cms.complaint_management_system.dto.api_request.CitizenUpdateRequest;
 import com.cms.complaint_management_system.entity.UserRecord;
 import com.cms.complaint_management_system.exception.UserNotFoundException;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface CitizenService {
@@ -16,4 +17,6 @@ public interface CitizenService {
     void deleteCitizenDetails(UUID citizenId);
 
     CitizenDto updateCitizenDetails(UUID citizenId, CitizenUpdateRequest request);
+
+    List<UserRecord> getAllUsers();
 }
