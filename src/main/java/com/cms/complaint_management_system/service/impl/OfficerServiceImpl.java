@@ -35,7 +35,6 @@ public class OfficerServiceImpl implements OfficerService {
     }
 
 
-    @Transactional
     @Override
     public OfficerDto saveOfficerDetails(OfficerRegisterRequest request){
         Departments departmentEntity = departmentRepository.findById(request.getDepartmentId())
@@ -44,6 +43,8 @@ public class OfficerServiceImpl implements OfficerService {
         UserRecord user = modelMapper.map(request, UserRecord.class);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(UserRoles.OFFICER);
+        user.setDepartment(departmentEntity);
+
         var newOfficer = userRepository.save(user);
         return modelMapper.map(newOfficer, OfficerDto.class);
     }
@@ -52,10 +53,10 @@ public class OfficerServiceImpl implements OfficerService {
     @Override
     public UserRecord updateOfficerDetails(UUID officerId, OfficerUpdateRequest request) {
         UserRecord user = userRepository.findById(officerId)
-                .orElseThrow(() -> new UserNotFoundException("Officer not found with id: "+officerId));
+                .orElseThrow(() -> new UserNotFoundException("Officer not found"));
 
         if (user.getRole() != UserRoles.OFFICER){
-            throw new UserNotFoundException("Officer not found with id: "+officerId);
+            throw new UserNotFoundException("Officer not found");
         }
 
         Departments departmentEntity = departmentRepository.findById(request.getDepartmentId())
@@ -72,7 +73,7 @@ public class OfficerServiceImpl implements OfficerService {
     @Override
     public OfficerDto getOfficerDetails(UUID officerId) throws UserNotFoundException {
         OfficerDto user =  userRepository.getOfficerDetails(officerId)
-                .orElseThrow(() -> new UserNotFoundException("Officer not found with id: "+officerId));
+                .orElseThrow(() -> new UserNotFoundException("Officer not found"));
 
         if (user.getRole() != UserRoles.OFFICER){
             throw new UserNotFoundException("Officer not found with id: "+officerId);
