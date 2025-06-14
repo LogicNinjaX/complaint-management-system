@@ -4,7 +4,6 @@ import com.cms.complaint_management_system.enums.UserRoles;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -18,21 +17,15 @@ public class CustomUserDetails implements UserDetails {
 
     private UserRoles role;
 
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public CustomUserDetails(UUID userId, String username, String password, UserRoles role, LocalDateTime createdAt,
-                             LocalDateTime updatedAt, Collection<? extends GrantedAuthority> authorities) {
+    public CustomUserDetails(UUID userId, String username, String password, UserRoles role, Collection<? extends GrantedAuthority> authorities) {
 
         this.userId = userId;
         this.username = username;
         this.password = password;
         this.role = role;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
         this.authorities = authorities;
     }
 
@@ -94,22 +87,6 @@ public class CustomUserDetails implements UserDetails {
 
     public void setRole(UserRoles role) {
         this.role = role;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
