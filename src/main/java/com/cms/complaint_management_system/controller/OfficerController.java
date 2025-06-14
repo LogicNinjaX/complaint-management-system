@@ -6,60 +6,60 @@ import com.cms.complaint_management_system.dto.api_request.OfficerRegisterReques
 import com.cms.complaint_management_system.dto.api_request.OfficerUpdateRequest;
 import com.cms.complaint_management_system.dto.api_response.GeneralResponse;
 import com.cms.complaint_management_system.entity.UserRecord;
+import com.cms.complaint_management_system.security.CustomUserDetails;
 import com.cms.complaint_management_system.service.OfficerService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1")
 public class OfficerController {
 
     private final OfficerService officerService;
-    private final ModelMapper modelMapper;
 
-    public OfficerController(OfficerService officerService, ModelMapper modelMapper) {
+    public OfficerController(OfficerService officerService) {
         this.officerService = officerService;
-        this.modelMapper = modelMapper;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/officers") // roles allowed -> admin
     public ResponseEntity<GeneralResponse<OfficerDto>> registerOfficer(@Valid @RequestBody OfficerRegisterRequest request){
         var officerEntity = officerService.saveOfficerDetails(request);
-
+        officerEntity.setPassword(request.getPassword());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new GeneralResponse<>(true, "Officer details saved successfully", officerEntity));
     }
 
     @PreAuthorize("hasAnyRole('OFFICER', 'ADMIN')")
-    @GetMapping("/officers/{officer-id}")
-    public ResponseEntity<GeneralResponse<OfficerDto>> getOfficer(@PathVariable("officer-id") UUID officerId){
-        var officerEntity = officerService.getOfficerDetails(officerId);
+    @GetMapping("/officers")
+    public ResponseEntity<GeneralResponse<OfficerDto>> getOfficer(@AuthenticationPrincipal CustomUserDetails user){
+        var officerEntity = officerService.getOfficerDetails(user.getUserId());
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GeneralResponse<>(true, "Data retrieved successfully", officerEntity));
     }
 
     @PreAuthorize("hasAnyRole('OFFICER', 'ADMIN')")
-    @DeleteMapping("/officers/{officer-id}")
-    public ResponseEntity<GeneralResponse<?>> deleteOfficer(@PathVariable("officer-id") UUID officerId){
-        officerService.deleteOfficerDetails(officerId);
+    @DeleteMapping("/officers")
+    public ResponseEntity<GeneralResponse<?>> deleteOfficer(@AuthenticationPrincipal CustomUserDetails user){
+        officerService.deleteOfficerDetails(user.getUserId());
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GeneralResponse<>(true, "Officer deleted successfully", null));
     }
 
     @PreAuthorize("hasAnyRole('OFFICER', 'ADMIN')")
-    @PutMapping("/officers/{officer-id}")
-    public ResponseEntity<GeneralResponse<UserRecord>> updateOfficer(@PathVariable("officer-id") UUID officerId,
+    @PutMapping("/officers")
+    public ResponseEntity<GeneralResponse<UserRecord>> updateOfficer(@AuthenticationPrincipal CustomUserDetails user,
                                                            @Valid @RequestBody OfficerUpdateRequest request){
 
-        var updatedOfficer = officerService.updateOfficerDetails(officerId, request);
+        var updatedOfficer = officerService.updateOfficerDetails(user.getUserId(), request);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GeneralResponse<>(true, "Officer updated successfully", updatedOfficer));

@@ -3,11 +3,19 @@ package com.cms.complaint_management_system.controller;
 
 import com.cms.complaint_management_system.dto.api_request.UserLoginRequest;
 import com.cms.complaint_management_system.dto.api_response.GeneralResponse;
+import com.cms.complaint_management_system.entity.UserRecord;
+import com.cms.complaint_management_system.exception.UserNotFoundException;
+import com.cms.complaint_management_system.repository.UserRepository;
+import com.cms.complaint_management_system.security.CustomUserDetails;
 import com.cms.complaint_management_system.security.JwtUtil;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,8 +37,12 @@ public class UserAuthController {
 
     @PostMapping("/login")
     public ResponseEntity<GeneralResponse<?>> userLogin(@Valid @RequestBody UserLoginRequest request){
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-        String token = jwtUtil.generateToken(request.getUsername());
+        Authentication authentication =
+                authenticationManager
+                        .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        String token = jwtUtil.generateToken(userDetails.getUserId(), userDetails.getUsername(), userDetails.getRole().name());
 
         return ResponseEntity.ok(new GeneralResponse<>(true, "login successful",
                 Collections.singletonMap("token", token)));
