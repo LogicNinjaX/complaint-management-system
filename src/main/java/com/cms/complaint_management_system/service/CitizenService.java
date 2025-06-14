@@ -17,6 +17,4 @@ public interface CitizenService {
     void deleteCitizenDetails(UUID citizenId);
 
     CitizenDto updateCitizenDetails(UUID citizenId, CitizenUpdateRequest request);
-
-    List<UserRecord> getAllUsers();
 }
