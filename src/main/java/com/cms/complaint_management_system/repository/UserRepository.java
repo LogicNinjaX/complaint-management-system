@@ -28,6 +28,6 @@ public interface UserRepository extends JpaRepository<UserRecord, UUID> {
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM UserRecord u WHERE u.userId = :officerId AND u.role = UserRoles.CITIZEN")
+    @Query("DELETE FROM UserRecord u WHERE u.userId = :officerId AND u.role = UserRoles.OFFICER")
     void deleteOfficerDetails(UUID officerId);
 }
