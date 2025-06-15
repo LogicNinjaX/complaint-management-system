@@ -16,7 +16,7 @@ public class ComplaintRecord {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID complaintId;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "categoryId")
     private ComplaintCategories category;
 
@@ -37,7 +37,7 @@ public class ComplaintRecord {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ComplaintStatus status = ComplaintStatus.pending;
+    private ComplaintStatus status = ComplaintStatus.PENDING;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
@@ -45,6 +45,16 @@ public class ComplaintRecord {
 
     public UUID getComplaintId() {
         return complaintId;
+    }
+
+    public ComplaintRecord() {
+    }
+
+    public ComplaintRecord(String title, String description, String address, UserRecord user) {
+        this.title = title;
+        this.description = description;
+        this.address = address;
+        this.user = user;
     }
 
     public void setComplaintId(UUID complaintId) {

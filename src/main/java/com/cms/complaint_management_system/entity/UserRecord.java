@@ -44,7 +44,7 @@ public class UserRecord implements Serializable {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user_id")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<ComplaintRecord> complaintRecords;
 
     public UserRecord() {
