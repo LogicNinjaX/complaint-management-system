@@ -8,6 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -42,6 +43,9 @@ public class UserRecord implements Serializable {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user_id")
+    private List<ComplaintRecord> complaintRecords;
 
     public UserRecord() {
     }
@@ -115,5 +119,13 @@ public class UserRecord implements Serializable {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public List<ComplaintRecord> getComplaintRecords() {
+        return complaintRecords;
+    }
+
+    public void setComplaintRecords(List<ComplaintRecord> complaintRecords) {
+        this.complaintRecords = complaintRecords;
     }
 }

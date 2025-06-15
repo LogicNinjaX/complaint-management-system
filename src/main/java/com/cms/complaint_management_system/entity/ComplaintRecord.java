@@ -39,6 +39,10 @@ public class ComplaintRecord {
     @Column(nullable = false)
     private ComplaintStatus status = ComplaintStatus.pending;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserRecord user;
+
     public UUID getComplaintId() {
         return complaintId;
     }
@@ -101,5 +105,13 @@ public class ComplaintRecord {
 
     public void setStatus(ComplaintStatus status) {
         this.status = status;
+    }
+
+    public UserRecord getUser() {
+        return user;
+    }
+
+    public void setUser(UserRecord user) {
+        this.user = user;
     }
 }
