@@ -14,6 +14,9 @@ import com.cms.complaint_management_system.repository.UserRepository;
 import com.cms.complaint_management_system.service.OfficerService;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +52,7 @@ public class OfficerServiceImpl implements OfficerService {
         return modelMapper.map(newOfficer, OfficerDto.class);
     }
 
+    @CachePut(value = "officer", key = "#officerId")
     @Transactional
     @Override
     public UserRecord updateOfficerDetails(UUID officerId, OfficerUpdateRequest request) {
@@ -70,6 +74,7 @@ public class OfficerServiceImpl implements OfficerService {
         return userRepository.save(user);
     }
 
+    @Cacheable(value = "officer", key = "#officerId")
     @Override
     public OfficerDto getOfficerDetails(UUID officerId) throws UserNotFoundException {
         OfficerDto user =  userRepository.getOfficerDetails(officerId)
@@ -82,6 +87,7 @@ public class OfficerServiceImpl implements OfficerService {
     }
 
 
+    @CacheEvict(value = "officer", key = "#officerId")
     @Override
     public void deleteOfficerDetails(UUID officerId) {
         userRepository.deleteOfficerDetails(officerId);

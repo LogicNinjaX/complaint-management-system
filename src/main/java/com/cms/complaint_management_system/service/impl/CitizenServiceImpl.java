@@ -9,6 +9,9 @@ import com.cms.complaint_management_system.repository.UserRepository;
 import com.cms.complaint_management_system.service.CitizenService;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +38,7 @@ public class CitizenServiceImpl implements CitizenService {
         return modelMapper.map(user, CitizenDto.class);
     }
 
+    @Cacheable(value = "citizen", key = "#citizenId")
     @Override
     public CitizenDto getCitizenDetails(UUID citizenId) throws UserNotFoundException {
         CitizenDto user =  userRepository.getCitizenDetails(citizenId)
@@ -47,11 +51,13 @@ public class CitizenServiceImpl implements CitizenService {
         return user;
     }
 
+    @CacheEvict(value = "citizen", key = "#citizenId")
     @Override
     public void deleteCitizenDetails(UUID citizenId) {
         userRepository.deleteCitizenDetails(citizenId);
     }
 
+    @CachePut(value = "citizen", key = "#citizenId")
     @Transactional
     @Override
     public CitizenDto updateCitizenDetails(UUID citizenId, CitizenUpdateRequest request) {
