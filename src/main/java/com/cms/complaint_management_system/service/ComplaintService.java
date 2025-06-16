@@ -22,4 +22,6 @@ public interface ComplaintService {
     List<ComplaintWithoutUserDto> getComplainsByUserId(UUID userId, int pageNumber, int pageSize, String sortBy, String sortDir);
 
     void updateComplaintStatus(UUID complaintId, ComplaintStatus status) throws ComplaintNotFoundException;
+
+    void deleteComplaintByComplaintId(UUID complaintId);
 }
