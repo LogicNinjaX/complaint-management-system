@@ -10,7 +10,7 @@ public class Departments {
     @Id
     private long departmentId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String departmentName;
 
     public long getDepartmentId() {
