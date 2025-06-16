@@ -93,5 +93,10 @@ public class ComplaintServiceImpl implements ComplaintService {
         }
     }
 
+    @Override
+    public void deleteComplaintByComplaintId(UUID complaintId) {
+        complaintRepository.deleteByComplaintId(complaintId);
+    }
+
 
 }
