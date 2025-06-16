@@ -21,11 +21,16 @@ public interface ComplaintRepository extends JpaRepository<ComplaintRecord, UUID
     @Query("SELECT new com.cms.complaint_management_system.dto.ComplaintWithoutUserDto(c.complaintId, c.category, c.title, c.description, c.address, c.createdAt, c.updatedAt, c.status) FROM ComplaintRecord c WHERE c.complaintId = :complaintId")
     Optional<ComplaintWithoutUserDto> getComplainByComplaintId(UUID complaintId);
 
-    @Query("SELECT new com.cms.complaint_management_system.dto.ComplaintWithoutUserDto(c.complaintId, c.category, c.title, c.description, c.address, c.createdAt, c.updatedAt, c.status) FROM ComplaintRecord c WHERE c.user.userId :userId")
+    @Query("SELECT new com.cms.complaint_management_system.dto.ComplaintWithoutUserDto(c.complaintId, c.category, c.title, c.description, c.address, c.createdAt, c.updatedAt, c.status) FROM ComplaintRecord c WHERE c.user.userId = :userId")
     Page<ComplaintWithoutUserDto> getComplainsByUserId(UUID userId, Pageable pageable);
 
     @Transactional
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE ComplaintRecord c SET c.status = :status WHERE c.complaintId = :complaintId")
     int updateComplaintStatus(UUID complaintId, ComplaintStatus status);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM ComplaintRecord c WHERE c.complaintId = :complaintId")
+    void deleteByComplaintId(UUID complaintId);
 }
