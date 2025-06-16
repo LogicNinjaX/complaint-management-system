@@ -44,7 +44,7 @@ public class UserAuthController {
         this.officerService = officerService;
     }
 
-    @PostMapping("/citizens")
+    @PostMapping("/register/citizens")
     public ResponseEntity<GeneralResponse<CitizenDto>> registerCitizen(@Valid @RequestBody CitizenRegisterRequest registerRequest){
         var userEntity = modelMapper.map(registerRequest, UserRecord.class);
 
@@ -54,7 +54,7 @@ public class UserAuthController {
                 .body(new GeneralResponse<>(true, "Citizen details saved successfully", savedUserEntity));
     }
 
-    @PostMapping("/officers")
+    @PostMapping("/register/officers")
     public ResponseEntity<GeneralResponse<OfficerDto>> registerOfficer(@Valid @RequestBody OfficerRegisterRequest request){
         var officerEntity = officerService.saveOfficerDetails(request);
         officerEntity.setPassword(request.getPassword());
