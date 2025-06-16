@@ -1,11 +1,20 @@
 package com.cms.complaint_management_system.controller;
 
 
+import com.cms.complaint_management_system.dto.CitizenDto;
+import com.cms.complaint_management_system.dto.OfficerDto;
+import com.cms.complaint_management_system.dto.api_request.CitizenRegisterRequest;
+import com.cms.complaint_management_system.dto.api_request.OfficerRegisterRequest;
 import com.cms.complaint_management_system.dto.api_request.UserLoginRequest;
 import com.cms.complaint_management_system.dto.api_response.GeneralResponse;
+import com.cms.complaint_management_system.entity.UserRecord;
 import com.cms.complaint_management_system.security.CustomUserDetails;
 import com.cms.complaint_management_system.security.JwtUtil;
+import com.cms.complaint_management_system.service.CitizenService;
+import com.cms.complaint_management_system.service.OfficerService;
 import jakarta.validation.Valid;
+import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,10 +32,34 @@ public class UserAuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final ModelMapper modelMapper;
+    private final CitizenService citizenService;
+    private final OfficerService officerService;
 
-    public UserAuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+    public UserAuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil, ModelMapper modelMapper, CitizenService citizenService, OfficerService officerService) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
+        this.modelMapper = modelMapper;
+        this.citizenService = citizenService;
+        this.officerService = officerService;
+    }
+
+    @PostMapping("/citizens")
+    public ResponseEntity<GeneralResponse<CitizenDto>> registerCitizen(@Valid @RequestBody CitizenRegisterRequest registerRequest){
+        var userEntity = modelMapper.map(registerRequest, UserRecord.class);
+
+        var savedUserEntity = citizenService.saveCitizenDetails(userEntity);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new GeneralResponse<>(true, "Citizen details saved successfully", savedUserEntity));
+    }
+
+    @PostMapping("/officers")
+    public ResponseEntity<GeneralResponse<OfficerDto>> registerOfficer(@Valid @RequestBody OfficerRegisterRequest request){
+        var officerEntity = officerService.saveOfficerDetails(request);
+        officerEntity.setPassword(request.getPassword());
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new GeneralResponse<>(true, "Officer details saved successfully", officerEntity));
     }
 
     @PostMapping("/login")
