@@ -9,7 +9,7 @@ public class ComplaintCategories {
     @Id
     private long categoryId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String categoryName;
 
     private long departmentId;
