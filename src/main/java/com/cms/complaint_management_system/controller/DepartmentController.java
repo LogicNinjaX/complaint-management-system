@@ -4,6 +4,7 @@ import com.cms.complaint_management_system.dto.api_request.DepartmentRegisterReq
 import com.cms.complaint_management_system.dto.api_response.GeneralResponse;
 import com.cms.complaint_management_system.entity.Departments;
 import com.cms.complaint_management_system.service.DepartmentService;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class DepartmentController {
     }
 
     @PostMapping("/departments")
-    public ResponseEntity<GeneralResponse<Departments>> saveDepartment(@RequestBody DepartmentRegisterRequest request){
+    public ResponseEntity<GeneralResponse<Departments>> saveDepartment(@Valid @RequestBody DepartmentRegisterRequest request){
 
         var savedDepartment = departmentService.saveDepartment(modelMapper.map(request, Departments.class));
         return ResponseEntity.status(HttpStatus.OK)
