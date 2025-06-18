@@ -3,9 +3,13 @@ package com.cms.complaint_management_system.entity;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "departments")
-public class Departments {
+public class Departments implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     private long departmentId;
