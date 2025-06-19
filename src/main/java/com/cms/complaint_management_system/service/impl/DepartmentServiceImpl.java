@@ -1,13 +1,15 @@
 package com.cms.complaint_management_system.service.impl;
 
 
+import com.cms.complaint_management_system.dto.api_request.DepartmentUpdateRequest;
 import com.cms.complaint_management_system.entity.Departments;
 import com.cms.complaint_management_system.exception.DepartmentException;
 import com.cms.complaint_management_system.exception.DepartmentNotFoundException;
 import com.cms.complaint_management_system.repository.DepartmentRepository;
 import com.cms.complaint_management_system.service.DepartmentService;
-import jakarta.persistence.EntityExistsException;
-import jakarta.transaction.Transactional;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +17,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
@@ -41,6 +42,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         return departmentRepository.findAll(pageable).toList();
     }
 
+    @Cacheable(value = "department", key = "#departmentId")
     @Override
     public Departments getDepartmentById(long departmentId) throws DepartmentNotFoundException {
         return departmentRepository.findById(departmentId)
@@ -65,9 +67,20 @@ public class DepartmentServiceImpl implements DepartmentService {
         return savedDepartment;
     }
 
+    @CacheEvict(value = "department", key = "#departmentId")
     @Override
     public void deleteDepartmentById(long departmentId) {
         departmentRepository.deleteDepartmentById(departmentId);
+    }
+
+    @CachePut(value = "department", key = "#departmentId")
+    @Override
+    public Departments updateDepartment(long departmentId, DepartmentUpdateRequest request) {
+        var department = departmentRepository.findById(departmentId)
+                .orElseThrow(() -> new DepartmentNotFoundException("Department not found with id: "+departmentId));
+
+        department.setDepartmentName(request.getDepartmentName());
+        return departmentRepository.save(department);
     }
 
 }

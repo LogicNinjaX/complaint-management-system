@@ -1,5 +1,6 @@
 package com.cms.complaint_management_system.service;
 
+import com.cms.complaint_management_system.dto.api_request.DepartmentUpdateRequest;
 import com.cms.complaint_management_system.entity.Departments;
 import com.cms.complaint_management_system.exception.DepartmentNotFoundException;
 
@@ -14,4 +15,6 @@ public interface DepartmentService {
     Departments saveDepartment(Departments departments);
 
     void deleteDepartmentById(long departmentId);
+
+    Departments updateDepartment(long departmentId, DepartmentUpdateRequest request);
 }
