@@ -1,6 +1,7 @@
 package com.cms.complaint_management_system.controller;
 
 import com.cms.complaint_management_system.dto.api_request.DepartmentRegisterRequest;
+import com.cms.complaint_management_system.dto.api_request.DepartmentUpdateRequest;
 import com.cms.complaint_management_system.dto.api_response.GeneralResponse;
 import com.cms.complaint_management_system.entity.Departments;
 import com.cms.complaint_management_system.service.DepartmentService;
@@ -62,6 +63,14 @@ public class DepartmentController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GeneralResponse<>(true, "Department deleted successfully", null));
+    }
+
+    @PutMapping("/departments/{department-id}")
+    public ResponseEntity<GeneralResponse<Departments>> updateDepartment(@PathVariable("department-id") long departmentId, @Valid @RequestBody DepartmentUpdateRequest request){
+        var updatedDepartment = departmentService.updateDepartment(departmentId, request);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new GeneralResponse<>(true, "Department updated successfully", updatedDepartment));
     }
 
 
