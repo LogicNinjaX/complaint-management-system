@@ -13,6 +13,8 @@ import com.cms.complaint_management_system.repository.ComplaintCategoryRepositor
 import com.cms.complaint_management_system.repository.ComplaintRepository;
 import com.cms.complaint_management_system.repository.UserRepository;
 import com.cms.complaint_management_system.service.ComplaintService;
+import com.cms.complaint_management_system.service.DepartmentService;
+import com.cms.complaint_management_system.service.EmailService;
 import jakarta.persistence.EntityManager;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
@@ -31,13 +33,17 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final UserRepository userRepository;
     private final EntityManager entityManager;
     private final ModelMapper modelMapper;
+    private final EmailService emailService;
+    private final DepartmentService departmentService;
 
-    public ComplaintServiceImpl(ComplaintRepository complaintRepository, ComplaintCategoryRepository categoryRepository, UserRepository userRepository, EntityManager entityManager, ModelMapper modelMapper) {
+    public ComplaintServiceImpl(ComplaintRepository complaintRepository, ComplaintCategoryRepository categoryRepository, UserRepository userRepository, EntityManager entityManager, ModelMapper modelMapper, EmailService emailService, DepartmentService departmentService) {
         this.complaintRepository = complaintRepository;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
         this.entityManager = entityManager;
         this.modelMapper = modelMapper;
+        this.emailService = emailService;
+        this.departmentService = departmentService;
     }
 
     @Override
@@ -45,15 +51,18 @@ public class ComplaintServiceImpl implements ComplaintService {
         var category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
 
-        if (!userRepository.existsById(userId)){
-            throw new UserNotFoundException("User not found");
-        }
-
-        var user = entityManager.getReference(UserRecord.class, userId);
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         ComplaintRecord complaint = new ComplaintRecord(request.getTitle(), request.getDescription(), request.getAddress(), user);
         complaint.setCategory(category);
-        return modelMapper.map(complaintRepository.save(complaint), ComplaintDto.class);
+        var savedComplaint = complaintRepository.save(complaint);
+
+        var department = departmentService.getDepartmentById(category.getDepartmentId());
+
+        emailService.sendEmail(user.getEmail(), user.getUsername(), savedComplaint.getComplaintId().toString(), savedComplaint.getCategory().getCategoryName(), department.getDepartmentName(), savedComplaint.getCreatedAt().toString());
+
+        return modelMapper.map(savedComplaint, ComplaintDto.class);
     }
 
     @Override
