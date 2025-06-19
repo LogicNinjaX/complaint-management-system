@@ -23,3 +23,15 @@ spring:
         password: ${redis-pass}
         port: ${redis-port}
         timeout: 60000
+
+  mail:
+    host: ${smtp-host}
+    port: ${smtp-port}
+    username: ${smtp-uname}
+    password: ${smtp-pass}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
