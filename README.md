@@ -202,6 +202,7 @@ spring:
 ```bash
 ./mvnw spring-boot:run
 ```
+run import.sql for testing
 
 ## 📄 License
 
