@@ -4,7 +4,6 @@ import com.cms.complaint_management_system.dto.ComplaintDto;
 import com.cms.complaint_management_system.dto.ComplaintWithoutUserDto;
 import com.cms.complaint_management_system.dto.api_request.ComplaintRegisterRequest;
 import com.cms.complaint_management_system.entity.ComplaintRecord;
-import com.cms.complaint_management_system.entity.UserRecord;
 import com.cms.complaint_management_system.enums.ComplaintStatus;
 import com.cms.complaint_management_system.exception.CategoryNotFoundException;
 import com.cms.complaint_management_system.exception.ComplaintNotFoundException;
@@ -15,7 +14,6 @@ import com.cms.complaint_management_system.repository.UserRepository;
 import com.cms.complaint_management_system.service.ComplaintService;
 import com.cms.complaint_management_system.service.DepartmentService;
 import com.cms.complaint_management_system.service.EmailService;
-import jakarta.persistence.EntityManager;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,16 +29,14 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final ComplaintRepository complaintRepository;
     private final ComplaintCategoryRepository categoryRepository;
     private final UserRepository userRepository;
-    private final EntityManager entityManager;
     private final ModelMapper modelMapper;
     private final EmailService emailService;
     private final DepartmentService departmentService;
 
-    public ComplaintServiceImpl(ComplaintRepository complaintRepository, ComplaintCategoryRepository categoryRepository, UserRepository userRepository, EntityManager entityManager, ModelMapper modelMapper, EmailService emailService, DepartmentService departmentService) {
+    public ComplaintServiceImpl(ComplaintRepository complaintRepository, ComplaintCategoryRepository categoryRepository, UserRepository userRepository, ModelMapper modelMapper, EmailService emailService, DepartmentService departmentService) {
         this.complaintRepository = complaintRepository;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
-        this.entityManager = entityManager;
         this.modelMapper = modelMapper;
         this.emailService = emailService;
         this.departmentService = departmentService;
