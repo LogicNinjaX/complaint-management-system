@@ -3,8 +3,11 @@ package com.cms.complaint_management_system.service.impl;
 import com.cms.complaint_management_system.service.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -14,6 +17,7 @@ public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
+    private static final Logger LOGGER = LoggerFactory.getLogger(EmailServiceImpl.class);
 
 
     public EmailServiceImpl(JavaMailSender mailSender, TemplateEngine templateEngine) {
@@ -22,6 +26,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
 
+    @Async
     @Override
     public void sendEmail(String toEmail, String name, String complaintId, String categoryName, String departmentName, String date){
 
@@ -44,6 +49,7 @@ public class EmailServiceImpl implements EmailService {
             mimeMessageHelper.setText(htmlContent, true);
 
             mailSender.send(mimeMessage);
+            LOGGER.info("Email sent to user: {}", name);
         } catch (MessagingException e) {
             throw new RuntimeException("Failed to send email to:"+toEmail);
         }
