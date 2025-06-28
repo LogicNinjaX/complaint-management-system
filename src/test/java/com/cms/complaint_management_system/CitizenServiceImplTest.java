@@ -3,6 +3,7 @@ package com.cms.complaint_management_system;
 import com.cms.complaint_management_system.dto.CitizenDto;
 import com.cms.complaint_management_system.entity.UserRecord;
 import com.cms.complaint_management_system.enums.UserRoles;
+import com.cms.complaint_management_system.exception.UserNotFoundException;
 import com.cms.complaint_management_system.repository.UserRepository;
 import com.cms.complaint_management_system.service.impl.CitizenServiceImpl;
 import org.junit.jupiter.api.Assertions;
@@ -50,7 +51,7 @@ public class CitizenServiceImplTest {
     }
 
     @Test
-    @DisplayName("when valid id provided")
+    @DisplayName("getCitizenDetails - valid citizen - should return valid citizen along with valid role")
     void getCitizenDetails_shouldReturnCitizen_whenValidIdAndRole() {
 
         Mockito.when(userRepository.getCitizenDetails(citizenId)).thenReturn(Optional.of(mockCitizenDto));
@@ -60,6 +61,19 @@ public class CitizenServiceImplTest {
         Assertions.assertEquals(citizenId, result.getUserId());
 
         Assertions.assertEquals(UserRoles.CITIZEN, result.getRole());
+
+        Mockito.verify(userRepository).getCitizenDetails(citizenId);
+    }
+
+    @Test
+    @DisplayName("getCitizenDetails - unknown userId - should throw UserNotFoundException")
+    void getCitizenDetails_shouldThrowException_whenUserNotFound(){
+
+        Mockito.when(userRepository.getCitizenDetails(citizenId)).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(UserNotFoundException.class, () ->{
+            citizenService.getCitizenDetails(citizenId);
+        });
 
         Mockito.verify(userRepository).getCitizenDetails(citizenId);
     }
