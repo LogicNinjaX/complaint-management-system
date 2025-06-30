@@ -35,7 +35,7 @@ public class CitizenServiceImplTest {
 
     @InjectMocks
     private CitizenServiceImpl citizenService;
-
+    
     private UUID citizenId;
 
     private CitizenDto mockCitizenDto;
