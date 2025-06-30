@@ -71,5 +71,18 @@ public class TestOfficerServiceImpl {
         Mockito.verify(userRepository).save(user);
     }
 
+    @Test
+    @DisplayName("Should throw UserNotFound exception when unknown officerId provided")
+    void updateOfficerDetails_WhenUnknownOfficerId_ShouldThrowException(){
+        UUID unknownOfficerId = UUID.randomUUID();
 
+        OfficerUpdateRequest request = new OfficerUpdateRequest();
+
+        Mockito.when(userRepository.findById(unknownOfficerId))
+                .thenReturn(Optional.empty());
+
+        Assertions.assertThrows(UserNotFoundException.class,()->{
+            officerService.updateOfficerDetails(unknownOfficerId, request);
+        });
+    }
 }
