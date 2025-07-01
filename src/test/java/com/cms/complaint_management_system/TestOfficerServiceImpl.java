@@ -113,4 +113,18 @@ public class TestOfficerServiceImpl {
             officerService.getOfficerDetails(officerId);
         });
     }
+
+    @Test
+    @DisplayName("Should throw UserNotFoundException when role is not OFFICER")
+    void getOfficerDetails_ShouldThrowException_WhenInvalidUserRole(){
+        UUID officerId = UUID.randomUUID();
+        OfficerDto mockOfficer = Mockito.mock(OfficerDto.class);
+
+        Mockito.when(mockOfficer.getRole()).thenReturn(UserRoles.CITIZEN);
+        Mockito.when(userRepository.getOfficerDetails(officerId)).thenReturn(Optional.of(mockOfficer));
+
+        Assertions.assertThrows(UserNotFoundException.class, ()->{
+            officerService.getOfficerDetails(officerId);
+        });
+    }
 }
