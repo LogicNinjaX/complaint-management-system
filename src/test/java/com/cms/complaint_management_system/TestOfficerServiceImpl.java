@@ -1,5 +1,6 @@
 package com.cms.complaint_management_system;
 
+import com.cms.complaint_management_system.dto.OfficerDto;
 import com.cms.complaint_management_system.dto.api_request.OfficerUpdateRequest;
 import com.cms.complaint_management_system.entity.Departments;
 import com.cms.complaint_management_system.entity.UserRecord;
@@ -40,7 +41,7 @@ public class TestOfficerServiceImpl {
 
     @Test
     @DisplayName("Should update officer and return valid updated officer")
-    void updateOfficerDetails_ValidRequest_UpdatesAndReturnsUser(){
+    void updateOfficerDetails_ValidRequest_UpdatesAndReturnsUser() {
         UUID officerId = UUID.randomUUID();
 
         OfficerUpdateRequest request = new OfficerUpdateRequest();
@@ -73,7 +74,7 @@ public class TestOfficerServiceImpl {
 
     @Test
     @DisplayName("Should throw UserNotFound exception when unknown officerId provided")
-    void updateOfficerDetails_WhenUnknownOfficerId_ShouldThrowException(){
+    void updateOfficerDetails_ShouldThrowException_WhenUnknownOfficerId() {
         UUID unknownOfficerId = UUID.randomUUID();
 
         OfficerUpdateRequest request = new OfficerUpdateRequest();
@@ -81,7 +82,7 @@ public class TestOfficerServiceImpl {
         Mockito.when(userRepository.findById(unknownOfficerId))
                 .thenReturn(Optional.empty());
 
-        Assertions.assertThrows(UserNotFoundException.class,()->{
+        Assertions.assertThrows(UserNotFoundException.class, () -> {
             officerService.updateOfficerDetails(unknownOfficerId, request);
         });
     }
