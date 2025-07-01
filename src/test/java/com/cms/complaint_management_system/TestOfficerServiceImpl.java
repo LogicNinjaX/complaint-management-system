@@ -86,4 +86,21 @@ public class TestOfficerServiceImpl {
             officerService.updateOfficerDetails(unknownOfficerId, request);
         });
     }
+
+    @Test
+    @DisplayName("Should return Officer when valid officerId provided")
+    void getOfficerDetails_ShouldReturnValidOfficer_WhenValidOfficerId() {
+        UUID officerId = UUID.randomUUID();
+
+        OfficerDto mockOfficer = Mockito.mock(OfficerDto.class);
+
+        Mockito.when(mockOfficer.getRole()).thenReturn(UserRoles.OFFICER);
+        Mockito.when(userRepository.getOfficerDetails(officerId)).thenReturn(Optional.of(mockOfficer));
+
+        OfficerDto result = officerService.getOfficerDetails(officerId);
+
+        Assertions.assertEquals(mockOfficer, result);
+        Mockito.verify(userRepository).getOfficerDetails(officerId);
+    }
+
 }
